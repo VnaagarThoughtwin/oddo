@@ -1,0 +1,12 @@
+com.personal.oddo_new.app-jetified-annotation-experimental-1.1.0-0 /Users/apple/.gradle/caches/transforms-3/02315cc9f75263553d2042718fc375ee/transformed/jetified-annotation-experimental-1.1.0/res
+com.personal.oddo_new.app-jetified-window-1.0.0-beta04-1 /Users/apple/.gradle/caches/transforms-3/076eb9235982ee06112d76594ea8585f/transformed/jetified-window-1.0.0-beta04/res
+com.personal.oddo_new.app-jetified-window-java-1.0.0-beta04-2 /Users/apple/.gradle/caches/transforms-3/99750bb863b6fe460a7b5da8686e778d/transformed/jetified-window-java-1.0.0-beta04/res
+com.personal.oddo_new.app-core-1.6.0-3 /Users/apple/.gradle/caches/transforms-3/d08c73bfb05384f2e52578171dbd141e/transformed/core-1.6.0/res
+com.personal.oddo_new.app-main-4 /Users/apple/thoughtwin/oddo_new/android/app/src/main/res
+com.personal.oddo_new.app-release-5 /Users/apple/thoughtwin/oddo_new/android/app/src/release/res
+com.personal.oddo_new.app-pngs-6 /Users/apple/thoughtwin/oddo_new/build/app/generated/res/pngs/release
+com.personal.oddo_new.app-resValues-7 /Users/apple/thoughtwin/oddo_new/build/app/generated/res/resValues/release
+com.personal.oddo_new.app-rs-8 /Users/apple/thoughtwin/oddo_new/build/app/generated/res/rs/release
+com.personal.oddo_new.app-mergeReleaseResources-9 /Users/apple/thoughtwin/oddo_new/build/app/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.personal.oddo_new.app-mergeReleaseResources-10 /Users/apple/thoughtwin/oddo_new/build/app/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.personal.oddo_new.app-merged_res-11 /Users/apple/thoughtwin/oddo_new/build/app/intermediates/merged_res/release

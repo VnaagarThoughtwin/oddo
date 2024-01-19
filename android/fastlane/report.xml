@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000405">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: ./configure cl" time="0.023619">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: flutter clean" time="11.417633">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: flutter pub get" time="1.987618">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: flutter build apk" time="77.274451">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

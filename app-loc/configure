@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Region needed, aborting."
+    exit 0
+fi
+
+if [ ! -d "./app-$1" ]; then
+    echo "Region $1 not understood, aborting";
+    exit 0
+fi
+
+P=`pwd`"/.."
+
+if [ ! -z "$2" ]; then
+    P="$2"
+fi
+
+echo "Generating app for REGION $1"
+ln -sf `pwd`"/app-$1/config.json" "$P/config/config.json"
+ln -sf `pwd`"/app-$1/AndroidManifest.xml" "$P/android/app/src/main/AndroidManifest.xml"
+# ln -sf `pwd`"/app-$1/key.jks" "$P/android/key.jks"
+# ln -sf `pwd`"/app-$1/key.properties" "$P/android/key.properties"
+# ln -sf `pwd`"/app-$1/GoogleService-Info.plist" "$P/ios/Runner/GoogleService-Info.plist"
+# # Juan: No estoy seguro cual de estos dos es el bueno
+# ln -sf `pwd`"/app-$1/Info.plist" "$P/ios/Info.plist"
+# ln -sf `pwd`"/app-$1/Info.plist" "$P/ios/Runner/Info.plist"
+# # ln -sf `pwd`"/app-$1/AppIcon.appiconset" "$P/ios/Runner/Assets.xcassets/AppIcon.appiconset"
+# # ln -sf `pwd`"/app-$1/LaunchImage.imageset" "$P/ios/Runner/Assets.xcassets/LaunchImage.imageset"
+# ln -sf `pwd`"/app-$1/google-services.json" "$P/android/app/google-services.json"
+# #ln -sFf `pwd`"/app-$1/Runner.xcodeproj" "$P/ios/"
+# #ln -sFf `pwd`"/app-$1/Runner.xcworkspace" "$P/ios/"
+# ln -sf `pwd`"/app-$1/build.gradle" "$P/android/app/build.gradle"
+# ln -sFf `pwd`"/app-$1/mipmap-hdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/mipmap-mdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/mipmap-xhdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/mipmap-xxhdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/mipmap-xxxhdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/drawable" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/drawable-hdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/drawable-mdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/drawable-v21" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/drawable-xhdpi" "$P/android/app/src/main/res/"
+# ln -sFf `pwd`"/app-$1/values" "$P/android/app/src/main/res/"
+
+# #.xcodeproj will be copied and overwritten each time, to correctly set SRCROOT
+# cp -r "$(pwd)/app-$1/Runner.xcodeproj" "$P/ios/"
+
+# #https://stackoverflow.com/Questions/23539147/xcode-ld-Library-not-found-for-lpods ==> If using CocoaPods we need to use .xcworkspace
+# cp -r `pwd`"/app-$1/Runner.xcworkspace" "$P/ios/"
+
+echo "DONE!"

@@ -1,0 +1,48 @@
+{
+    "cl": {
+        "googleAnalyticsCode": "SOC UN CODI DE GA",
+        "apiBaseUrl": "group-taurus.com",
+        "allCategories": true,
+        "allCategoriesName": "Todas",
+        "allCategoriesNiceName": "todas",
+        "websocketDomain": "wss://checkpoint.group-taurus.com",
+        "websocketPort": 9998,
+        "regions": [
+            "CL-MYCOOKTOUCH"
+        ],
+        "numberOfRegions": 1,
+        "logo": "assets/logo-taurus-mycook.svg",
+        "clubLogo": "assets/icons/home/logo-club-mycook.svg",
+        "allTranslations": "es",
+        "uniLinksAuthor": "author",
+        "uniLinksRecipe": "receta",
+        "badgesActive": true,
+        "shoppingListActive": true,
+        "registrationActive": true,
+        "ebooksActive": false,
+        "blogActive": false,
+        "commentsActive": true,
+        "allowAnonymous": true,
+        "dietPlan": false,
+        "allowedCompats": ["S0","S1"],
+        "mycook": true,
+        "registrationUrl": "https://mycook.cl/alta-club",
+        "recoverPasswordUrl": "https://mycook.cl/recuperar-contrasena",
+        "webUrl": "https://mycook.cl",
+        "useSmallFonts": false,
+        "tags-separator": {
+            "diet": "Dietas",
+            "gastronomy": "Gastronomía",
+            "occasion": "Ocasiones",
+            "season": "Estación"
+        },
+        "adminRoles": ["superadmin", "admin"],
+        "supportConfig": {
+            "show-logos": false
+        },
+        "createAndEditRecipes": false,
+        "registerActive": true,
+        "measureTempratrure": false,
+        "fisrtPrivaciPolicyActive": true
+    }
+}

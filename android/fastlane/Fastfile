@@ -1,0 +1,268 @@
+fastlane_require "colorize"
+fastlane_require "nokogiri"
+fastlane_require "fileutils"
+
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+puts "La gestión de versiones y changelogs queda a cargo del usuario! (https://docs.fastlane.tools/actions/supply/#changelogs-whats-new)".bold
+
+$CONF_PATH = "/Users/apple/thoughtwin/oddo_new/app-loc"
+$OUT_AAB = "/Users/vikasnagar/Hiteshi_Flutter/mycook_app/build/app/outputs/bundle/release/app-release.aab"
+$OUT_APK = "/Users/vikasnagar/Hiteshi_Flutter/mycook_app/build/app/outputs/apk/release/app-release.apk"
+$META_BASE = "./fastlane/metadata"
+
+def isValidRegion(region)
+  Dir.exists?("#$CONF_PATH/app-#{region}")
+end
+
+def getMetaDataPath(region)
+  "#$META_BASE/meta-#{region}"
+end
+
+def getPackageNameForRegion(region)
+  @manifest = File.open("#$CONF_PATH/app-#{region}/AndroidManifest.xml") { |f| Nokogiri::XML(f) }
+  @manifest.xpath("//manifest").first["package"]
+end
+
+def getAvailableRegions()
+  Dir.glob("#$CONF_PATH/app-*").map { |match| match.split("-").last }
+end
+
+def buildAndUploadFor(track, region, opt)
+  @skip_aab = opt[:skip_aab] == nil ? false : opt[:skip_aab]
+  @skip_meta = opt[:skip_meta] == nil ? true : opt[:skip_meta]
+  @skip_changelogs = opt[:skip_changelogs] == nil ? false : opt[:skip_changelogs]
+  @skip_images = opt[:skip_images] == nil ? true : opt[:skip_images]
+  @skip_screenshots = opt[:skip_screenshots] == nil ? true : opt[:skip_screenshots]
+
+  Dir.chdir $CONF_PATH do
+    sh("./configure", region)
+  end
+
+  Dir.chdir "../../" do
+    sh("flutter", "clean")
+    sh("flutter", "pub", "get")
+    sh("flutter", "build", "appbundle")
+  end
+
+upload_to_play_store(
+    package_name: getPackageNameForRegion(region),
+    track: track,
+    aab: $OUT_AAB,
+    skip_upload_aab: @skip_aab,
+    skip_upload_metadata: @skip_meta,
+    skip_upload_changelogs: @skip_changelogs,
+    skip_upload_images: @skip_images,
+    skip_upload_screenshots: @skip_screenshots,
+    json_key: "/Users/vikasnagar/Hiteshi_Flutter/mycook_app/android/fastlane-key/api-8178750779303058451-725413-a122e0786153.json"  ,
+    json_key_data: ENV["/Users/vikasnagar/Hiteshi_Flutter/mycook_app/android/fastlane-key/api-8178750779303058451-725413-a122e0786153.json"],
+    metadata_path: getMetaDataPath(region),
+  )
+
+
+# upload_to_play_store(
+#     package_name: getPackageNameForRegion(region),
+#     track: track,
+#     aab: $OUT_AAB,
+#     skip_upload_aab: @skip_aab,
+#     skip_upload_metadata: @skip_meta,
+#     skip_upload_changelogs: @skip_changelogs,
+#     skip_upload_images: @skip_images,
+#     skip_upload_screenshots: @skip_screenshots,
+#     json_key: "../../android/fastlane-key/api-8178750779303058451-725413-a122e0786153.json"  ,
+#     json_key_data: ENV["../../mycooktouch/android/fastlane-key/api-8178750779303058451-725413-a122e0786153.json"],
+#     metadata_path: getMetaDataPath(region),
+#   )
+
+end
+
+def buildForTest(opt)
+  @region = opt[:region] == nil ? "es" : opt[:region]
+  @output_path = opt[:output_path]
+  @app_format = opt[:format] == nil ? "apk" : opt[:format]
+  @source_app = @app_format == "aab" ? $OUT_AAB : $OUT_APK
+
+  if (!["apk", "aab"].include?(@app_format))
+    puts "Unrecognized app format #$app_format.".red.bold
+    return
+  end
+
+  if (File.file?(@source_app))
+    File.unlink(@source_app)
+  end
+
+  Dir.chdir $CONF_PATH do
+    sh("./configure", @region)
+  end
+
+  Dir.chdir "../../" do
+    sh("flutter", "clean")
+    sh("flutter", "pub", "get")
+    sh("flutter", "build", @app_format == "aab" ? "appbundle" : "apk")
+  end
+
+  if (@output_path)
+    @ouput_filename = @output_path
+    @file_extension = File.extname(@ouput_filename)
+
+    if (@file_extension != "")
+      if (@file_extension != ("." + @app_format))
+        puts "Provided output file extension mismatch generated app extension.".yellow.bold
+      end
+
+      @output_dir = File.dirname(@ouput_filename)
+      if (!Dir.exists?(@output_dir))
+        FileUtils.mkdir_p(@output_dir)
+      end
+    else
+      if (!Dir.exists?(@ouput_filename))
+        FileUtils.mkdir_p(@ouput_filename)
+      end
+      @ouput_filename += @ouput_filename.end_with?("/") ? "app_" + @region + "." + @app_format : "/app_" + @region + "." + @app_format
+    end
+
+    #puts "SRC "+@source_app
+    #puts "TGT "+@ouput_filename
+    #puts Dir.pwd
+    FileUtils.mv(@source_app, @ouput_filename, force: true)
+  end
+end
+
+default_platform(:android)
+
+platform :android do
+
+  #_____________________ SINGLE ______________________
+
+  desc "Build and upload Beta version for a region"
+  lane :beta do |opt|
+    if (opt[:region] && isValidRegion(opt[:region]))
+      buildAndUploadFor("beta", opt[:region], opt)
+    else
+      puts "Please provide a valid region.".red.bold
+    end
+  end
+
+  desc "Build and upload Internal version for a region"
+  lane :internal do |opt|
+    if (opt[:region] && isValidRegion(opt[:region]))
+      buildAndUploadFor("internal", opt[:region], opt)
+    else
+      puts "Please provide a valid region.".red.bold
+    end
+  end
+
+  desc "Build and upload Alpha version for a region"
+  lane :alpha do |opt|
+    if (opt[:region] && isValidRegion(opt[:region]))
+      buildAndUploadFor("alpha", opt[:region], opt)
+    else
+      puts "Please provide a valid region.".red.bold
+    end
+  end
+
+  desc "Build and upload Production version for a region"
+  lane :production do |opt|
+    if (opt[:region] && isValidRegion(opt[:region]))
+      buildAndUploadFor("production", opt[:region], opt)
+    else
+      puts "Please provide a valid region.".red.bold
+    end
+  end
+
+  #______________________ ALL ______________________
+
+  desc "Build and upload Beta version for all regions"
+  lane :all_beta do |opt|
+    for region in getAvailableRegions()
+      buildAndUploadFor("beta", region, opt)
+    end
+  end
+
+  desc "Build and upload Internal version for all regions"
+  lane :all_internal do |opt|
+    for region in getAvailableRegions()
+      buildAndUploadFor("internal", region, opt)
+    end
+  end
+
+  desc "Build and upload Alpha version for all regions"
+  lane :all_alpha do |opt|
+    for region in getAvailableRegions()
+      buildAndUploadFor("alpha", region, opt)
+    end
+  end
+
+  desc "Build and upload Production version for all regions"
+  lane :all_production do |opt|
+    for region in getAvailableRegions()
+      buildAndUploadFor("production", region, opt)
+    end
+  end
+
+  #______________________ PROMOTE _____________________
+
+  desc "Promote an app from one track to another"
+  lane :promote do |opt|
+    if (opt[:from] && opt[:to] && opt[:region] && isValidRegion(opt[:region]))
+      upload_to_play_store(
+        track: opt[:from],
+        track_promote_to: opt[:to],
+        package_name: getPackageNameForRegion(opt[:region]),
+      )
+    else
+      puts "Invalid parameters.".red.bold
+    end
+  end
+
+  desc "Promote all regions from one track to another"
+  lane :promote_all do |opt|
+    if (opt[:from] && opt[:to])
+      for region in getAvailableRegions()
+        promote(from: opt[:from], to: opt[:to], region: region)
+      end
+    else
+      puts "Invalid parameters.".red.bold
+    end
+  end
+
+  #______________________ BUILD _____________________
+
+  desc "Build the aplication for internal distribution"
+  lane :build do |opt|
+    if (opt[:region] && isValidRegion(opt[:region]))
+      buildForTest(opt)
+    else
+      puts "Invalid parameters.".red.bold
+    end
+  end
+
+  desc "Build all regions"
+  lane :build_all do |opt|
+    if (opt[:output_path] && File.file?(opt[:output_path]))
+      puts "Output path needs to be a directory to build all regions.".red.bold
+    else
+      if (opt[:output_path] == nil)
+        puts "Defaulting 'output_path' to './__compiler_output__'.".yellow.bold
+        opt[:output_path] = "./__compiler_output__"
+      end
+      for region in getAvailableRegions()
+        opt[:region] = region
+        build(opt)
+      end
+    end
+  end
+end
